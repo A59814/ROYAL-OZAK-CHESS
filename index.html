@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>OZAK ROYAL CHESS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070605">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="c"></canvas>
+
+  <header class="bar" id="bar" hidden>
+    <div class="side"><div class="av">♔</div><span class="nm" id="nmMe">OZAK</span><span class="clk" id="clkMe">10:00</span></div>
+    <div class="think" id="think"><i></i><i></i><i></i></div>
+    <div class="side op"><span class="clk" id="clkOp">10:00</span><span class="nm" id="nmOp">—</span><div class="av" id="avOp">♚</div></div>
+  </header>
+
+  <div class="fab" id="fab" hidden>
+    <button id="bHome" aria-label="المستويات">☰</button>
+    <button id="bCam" aria-label="إعادة الكاميرا">◎</button>
+    <button id="bSnd" aria-label="الصوت">♪</button>
+  </div>
+
+  <div id="toast"></div>
+
+  <section class="scr on" id="s-start">
+    <div class="crest">♔</div>
+    <h1 class="logo sm">OZAK<span>ROYAL CHESS</span></h1>
+    <button class="gold" id="bEnter">ادخل القاعة</button>
+    <p class="hint">يُفضَّل تشغيل الصوت</p>
+    <p id="err" hidden>تعذّر تشغيل WebGL أو تحميل Three.js. تأكد من الاتصال بالإنترنت لأول مرة، أو ضع الملف <b>lib/three.min.js</b>.</p>
+  </section>
+
+  <section class="scr clear" id="s-intro">
+    <div class="titlebox">
+      <h1 class="logo">OZAK<span>ROYAL CHESS</span><i class="glint"></i></h1>
+      <button class="gold" id="bGo" onclick="document.getElementById('bSkip').click()">ابدأ الحُكم</button>
+    </div>
+    <button class="skip" id="bSkip">تخطّي</button>
+  </section>
+
+  <section class="scr" id="s-levels">
+    <div class="lhead"><h2>طور التحدي</h2><span id="tot">0 / 300 ★</span></div>
+    <div class="grid" id="grid"></div>
+    <p class="legend"><b>1–20</b> مبتدئ · <b>21–50</b> متوسط · <b>51–99</b> قوي · <b>100</b> الإمبراطور · <b class="fg">80+</b> ضباب الحرب</p>
+  </section>
+
+  <section class="scr" id="s-result">
+    <div class="rbox">
+      <h2 id="rTitle" class="heat">VICTORY</h2>
+      <p id="rSub"></p>
+      <div id="rStars"><i>★</i><i>★</i><i>★</i></div>
+      <p id="rInfo"></p>
+      <div class="btns">
+        <button class="gold" id="bNext">المستوى التالي</button>
+        <button class="ghost" id="bRetry">إعادة</button>
+        <button class="ghost" id="bMenu">المستويات</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="promo" hidden>
+    <div><button data-p="Q">♕</button><button data-p="R">♖</button><button data-p="B">♗</button><button data-p="N">♘</button></div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="heat" x="-10%" y="-30%" width="120%" height="160%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.07" numOctaves="2" seed="3" result="n">
+      <animate attributeName="baseFrequency" dur="2.6s" values="0.012 0.07;0.016 0.1;0.012 0.07" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<script>
+(function () {
+  function load(src, ok, fail) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = fail; document.head.appendChild(s); }
+  function boot() { load('game.js', function () { load('main.js'); }); }
+  function fail() { document.getElementById('err').hidden = false; }
+  // 1) نسخة محلية (للعمل دون إنترنت)  2) CDN ثم يخزّنها Service Worker تلقائياً
+  load('lib/three.min.js', boot, function () {
+    load('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', boot, fail);
+  });
+})();
+</script>
+</body>
+</html>
